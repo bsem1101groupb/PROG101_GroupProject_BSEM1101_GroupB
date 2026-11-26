@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value="FixSalone - Route and forward" />
+        <attribute name="authors" value="PROG101 Group" />
+        <attribute name="about" value="FixSalone - PROG101 Final Project" />
+        <attribute name="saved" value="2026-11-26 05:00:00 AM" />
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters />
+        <body>
+            <comment text="Module 4 - Route and forward to the responsible body" />
+            <declare name="category, district, chosen, sendOK" type="Integer" array="False" size="" />
+            <declare name="agency" type="String" array="False" size="" />
+            <output expression="&quot;Category? 1 Water, 2 Electricity, 3 Roads, 4 Waste, 5 Environment, 6 Health hazard, 7 Public safety, 8 Other&quot;" newline="True" />
+            <input variable="category" />
+            <output expression="&quot;District? 1 Western Area Urban, 2 Western Area Rural, 3 Bo, 4 Kenema, 5 Other&quot;" newline="True" />
+            <input variable="district" />
+            <assign variable="agency" expression="FindSpecific(category, district)" />
+            <if expression="agency = &quot;&quot;">
+                <then>
+                    <assign variable="agency" expression="FindAll(category)" />
+                </then>
+                <else />
+            </if>
+            <if expression="agency = &quot;&quot;">
+                <then>
+                    <output expression="&quot;No responsible body found. Moderator must choose. Enter 1 to choose one, 0 for none&quot;" newline="True" />
+                    <input variable="chosen" />
+                    <if expression="chosen = 1">
+                        <then>
+                            <assign variable="agency" expression="&quot;Agency chosen by the moderator&quot;" />
+                        </then>
+                        <else />
+                    </if>
+                </then>
+                <else />
+            </if>
+            <if expression="agency = &quot;&quot;">
+                <then>
+                    <output expression="&quot;Report stays in the review queue.&quot;" newline="True" />
+                </then>
+                <else>
+                    <output expression="&quot;Case package: tracking code, priority, category, description, photos, location, map link, report count&quot;" newline="True" />
+                    <output expression="&quot;The reporter's phone number is NOT included.&quot;" newline="True" />
+                    <output expression="&quot;Sending to &quot; &amp; agency" newline="True" />
+                    <output expression="&quot;Sent OK? 1 = yes, 0 = no&quot;" newline="True" />
+                    <input variable="sendOK" />
+                    <if expression="sendOK = 1">
+                        <then>
+                            <output expression="&quot;Status FORWARDED. SMS to citizen: your report was sent to &quot; &amp; agency" newline="True" />
+                        </then>
+                        <else>
+                            <output expression="&quot;Could not send. Added to the retry list. Will retry.&quot;" newline="True" />
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+    <function name="FindSpecific" type="String" variable="agency">
+        <parameters>
+            <parameter name="category" type="Integer" array="False" />
+            <parameter name="district" type="Integer" array="False" />
+        </parameters>
+        <body>
+            <declare name="agency" type="String" array="False" size="" />
+            <assign variable="agency" expression="&quot;&quot;" />
+            <comment text="Routing table rows that name a district (district 1 or 2 = Western Area)" />
+            <if expression="category = 1 and (district = 1 or district = 2)">
+                <then>
+                    <assign variable="agency" expression="&quot;Water utility, Western Area&quot;" />
+                </then>
+                <else />
+            </if>
+        </body>
+    </function>
+    <function name="FindAll" type="String" variable="agency">
+        <parameters>
+            <parameter name="category" type="Integer" array="False" />
+        </parameters>
+        <body>
+            <declare name="agency" type="String" array="False" size="" />
+            <assign variable="agency" expression="&quot;&quot;" />
+            <if expression="category = 1">
+                <then>
+                    <assign variable="agency" expression="&quot;Water utility (all districts)&quot;" />
+                </then>
+                <else />
+            </if>
+            <if expression="category = 2">
+                <then>
+                    <assign variable="agency" expression="&quot;Electricity utility (all districts)&quot;" />
+                </then>
+                <else />
+            </if>
+            <if expression="category = 3">
+                <then>
+                    <assign variable="agency" expression="&quot;Roads authority (all districts)&quot;" />
+                </then>
+                <else />
+            </if>
+            <if expression="category = 4">
+                <then>
+                    <assign variable="agency" expression="&quot;City or district council (all districts)&quot;" />
+                </then>
+                <else />
+            </if>
+            <if expression="category = 5">
+                <then>
+                    <assign variable="agency" expression="&quot;Environment protection agency (all districts)&quot;" />
+                </then>
+                <else />
+            </if>
+            <if expression="category = 6">
+                <then>
+                    <assign variable="agency" expression="&quot;District health team (all districts)&quot;" />
+                </then>
+                <else />
+            </if>
+            <if expression="category = 7">
+                <then>
+                    <assign variable="agency" expression="&quot;Disaster management agency (all districts)&quot;" />
+                </then>
+                <else />
+            </if>
+        </body>
+    </function>
+</flowgorithm>

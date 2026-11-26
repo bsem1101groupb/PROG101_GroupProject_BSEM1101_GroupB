@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value="FixSalone - Verification and triage" />
+        <attribute name="authors" value="PROG101 Group" />
+        <attribute name="about" value="FixSalone - PROG101 Final Project" />
+        <attribute name="saved" value="2026-11-26 05:00:00 AM" />
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters />
+        <body>
+            <comment text="Module 3 - Verification and triage" />
+            <declare name="personalInfo, qualityOK, sameCategory, distanceM, daysApart, severity, danger, reportCount, score" type="Integer" array="False" size="" />
+            <declare name="isDup" type="Boolean" array="False" size="" />
+            <declare name="level" type="String" array="False" size="" />
+            <output expression="&quot;Does the photo show faces or number plates? 1 = yes, 0 = no&quot;" newline="True" />
+            <input variable="personalInfo" />
+            <if expression="personalInfo = 1">
+                <then>
+                    <output expression="&quot;Personal information blurred.&quot;" newline="True" />
+                </then>
+                <else />
+            </if>
+            <output expression="&quot;Is the photo clear, real and on topic? 1 = yes, 0 = no&quot;" newline="True" />
+            <input variable="qualityOK" />
+            <if expression="qualityOK = 0">
+                <then>
+                    <output expression="&quot;REJECTED. SMS sent to the citizen with the reason. They can retake the photo.&quot;" newline="True" />
+                </then>
+                <else>
+                    <output expression="&quot;Nearest open report: same category? 1 = yes, 0 = no&quot;" newline="True" />
+                    <input variable="sameCategory" />
+                    <output expression="&quot;Distance to it in metres?&quot;" newline="True" />
+                    <input variable="distanceM" />
+                    <output expression="&quot;Days between the two reports?&quot;" newline="True" />
+                    <input variable="daysApart" />
+                    <output expression="&quot;Severity? 1 Low, 2 Medium, 3 High&quot;" newline="True" />
+                    <input variable="severity" />
+                    <output expression="&quot;Danger to life? 1 = yes, 0 = no&quot;" newline="True" />
+                    <input variable="danger" />
+                    <output expression="&quot;How many reports are already on that case? (0 if none)&quot;" newline="True" />
+                    <input variable="reportCount" />
+                    <assign variable="isDup" expression="IsDuplicate(sameCategory, distanceM, daysApart)" />
+                    <if expression="isDup = true">
+                        <then>
+                            <assign variable="reportCount" expression="reportCount + 1" />
+                            <assign variable="score" expression="CalculateScore(severity, reportCount, danger)" />
+                            <assign variable="level" expression="PriorityLevel(score)" />
+                            <output expression="&quot;Duplicate. Linked to the first report. Reports on this case: &quot; &amp; reportCount" newline="True" />
+                            <output expression="&quot;Score &quot; &amp; score &amp; &quot;, priority recalculated: &quot; &amp; level" newline="True" />
+                        </then>
+                        <else>
+                            <assign variable="reportCount" expression="1" />
+                            <assign variable="score" expression="CalculateScore(severity, reportCount, danger)" />
+                            <assign variable="level" expression="PriorityLevel(score)" />
+                            <output expression="&quot;New case. Score &quot; &amp; score &amp; &quot;, priority: &quot; &amp; level" newline="True" />
+                            <output expression="&quot;Status VERIFIED. Sending to routing (Module 4).&quot;" newline="True" />
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+    <function name="IsDuplicate" type="Boolean" variable="result">
+        <parameters>
+            <parameter name="sameCategory" type="Integer" array="False" />
+            <parameter name="distanceM" type="Integer" array="False" />
+            <parameter name="daysApart" type="Integer" array="False" />
+        </parameters>
+        <body>
+            <declare name="result" type="Boolean" array="False" size="" />
+            <if expression="sameCategory = 1 and distanceM &lt;= 100 and daysApart &lt;= 7">
+                <then>
+                    <assign variable="result" expression="true" />
+                </then>
+                <else>
+                    <assign variable="result" expression="false" />
+                </else>
+            </if>
+        </body>
+    </function>
+    <function name="CalculateScore" type="Integer" variable="score">
+        <parameters>
+            <parameter name="severity" type="Integer" array="False" />
+            <parameter name="reportCount" type="Integer" array="False" />
+            <parameter name="danger" type="Integer" array="False" />
+        </parameters>
+        <body>
+            <declare name="score, counted" type="Integer" array="False" size="" />
+            <assign variable="counted" expression="reportCount" />
+            <if expression="counted &gt; 10">
+                <then>
+                    <assign variable="counted" expression="10" />
+                </then>
+                <else />
+            </if>
+            <assign variable="score" expression="severity * 10 + counted * 2" />
+            <if expression="danger = 1">
+                <then>
+                    <assign variable="score" expression="score + 20" />
+                </then>
+                <else />
+            </if>
+        </body>
+    </function>
+    <function name="PriorityLevel" type="String" variable="level">
+        <parameters>
+            <parameter name="score" type="Integer" array="False" />
+        </parameters>
+        <body>
+            <declare name="level" type="String" array="False" size="" />
+            <if expression="score &gt;= 40">
+                <then>
+                    <assign variable="level" expression="&quot;URGENT&quot;" />
+                </then>
+                <else>
+                    <if expression="score &gt;= 25">
+                        <then>
+                            <assign variable="level" expression="&quot;HIGH&quot;" />
+                        </then>
+                        <else>
+                            <assign variable="level" expression="&quot;NORMAL&quot;" />
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+</flowgorithm>

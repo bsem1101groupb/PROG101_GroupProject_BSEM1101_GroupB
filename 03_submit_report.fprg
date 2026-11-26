@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value="FixSalone - Submit a report" />
+        <attribute name="authors" value="PROG101 Group" />
+        <attribute name="about" value="FixSalone - PROG101 Final Project" />
+        <attribute name="saved" value="2026-11-26 05:00:00 AM" />
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters />
+        <body>
+            <comment text="Module 2 - Submit a report (photo and location are required)" />
+            <declare name="reportsToday, photo, gpsOK, pinGiven, category, severity, danger, connection" type="Integer" array="False" size="" />
+            <declare name="description, trackingCode" type="String" array="False" size="" />
+            <declare name="locationOK" type="Boolean" array="False" size="" />
+            <output expression="&quot;How many reports have you sent today?&quot;" newline="True" />
+            <input variable="reportsToday" />
+            <if expression="reportsToday &gt;= 5">
+                <then>
+                    <output expression="&quot;Daily report limit reached. Try again tomorrow.&quot;" newline="True" />
+                </then>
+                <else>
+                    <output expression="&quot;Photo taken? 1 = yes, 0 = no&quot;" newline="True" />
+                    <input variable="photo" />
+                    <if expression="photo = 0">
+                        <then>
+                            <output expression="&quot;A photo is required&quot;" newline="True" />
+                        </then>
+                        <else>
+                            <output expression="&quot;GPS found? 1 = yes, 0 = no&quot;" newline="True" />
+                            <input variable="gpsOK" />
+                            <assign variable="locationOK" expression="false" />
+                            <if expression="gpsOK = 1">
+                                <then>
+                                    <assign variable="locationOK" expression="true" />
+                                </then>
+                                <else>
+                                    <output expression="&quot;GPS not found. Did you drop a pin or give a landmark? 1 = yes, 0 = no&quot;" newline="True" />
+                                    <input variable="pinGiven" />
+                                    <if expression="pinGiven = 1">
+                                        <then>
+                                            <assign variable="locationOK" expression="true" />
+                                        </then>
+                                        <else />
+                                    </if>
+                                </else>
+                            </if>
+                            <if expression="locationOK = false">
+                                <then>
+                                    <output expression="&quot;Location is required&quot;" newline="True" />
+                                </then>
+                                <else>
+                                    <output expression="&quot;Category? 1 Water, 2 Electricity, 3 Roads, 4 Waste and drainage, 5 Environment, 6 Health hazard, 7 Public safety, 8 Other&quot;" newline="True" />
+                                    <input variable="category" />
+                                    <if expression="category &lt; 1 or category &gt; 8">
+                                        <then>
+                                            <assign variable="category" expression="8" />
+                                        </then>
+                                        <else />
+                                    </if>
+                                    <output expression="&quot;Severity? 1 Low, 2 Medium, 3 High&quot;" newline="True" />
+                                    <input variable="severity" />
+                                    <output expression="&quot;Describe the problem&quot;" newline="True" />
+                                    <input variable="description" />
+                                    <if expression="Length(description) &lt; 10">
+                                        <then>
+                                            <output expression="&quot;Please describe the problem a little more&quot;" newline="True" />
+                                        </then>
+                                        <else>
+                                            <output expression="&quot;Danger to life? 1 = yes, 0 = no&quot;" newline="True" />
+                                            <input variable="danger" />
+                                            <if expression="danger = 1">
+                                                <then>
+                                                    <output expression="&quot;For emergencies, also call the emergency services directly.&quot;" newline="True" />
+                                                </then>
+                                                <else />
+                                            </if>
+                                            <assign variable="trackingCode" expression="&quot;FS-&quot; &amp; (1000 + Random(9000))" />
+                                            <output expression="&quot;Connection available? 1 = yes, 0 = no&quot;" newline="True" />
+                                            <input variable="connection" />
+                                            <if expression="connection = 1">
+                                                <then>
+                                                    <output expression="&quot;Report sent. SMS receipt sent to you.&quot;" newline="True" />
+                                                </then>
+                                                <else>
+                                                    <output expression="&quot;Saved on your phone. It will be sent when you are online.&quot;" newline="True" />
+                                                </else>
+                                            </if>
+                                            <output expression="&quot;Your tracking code is &quot; &amp; trackingCode" newline="True" />
+                                        </else>
+                                    </if>
+                                </else>
+                            </if>
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+</flowgorithm>

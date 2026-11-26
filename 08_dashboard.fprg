@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value="FixSalone - Dashboard" />
+        <attribute name="authors" value="PROG101 Group" />
+        <attribute name="about" value="FixSalone - PROG101 Final Project" />
+        <attribute name="saved" value="2026-11-26 05:00:00 AM" />
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters />
+        <body>
+            <comment text="Module 6 - Dashboard: resolution rate and average time to resolve" />
+            <declare name="total, i, isResolved, hours, resolved, totalHours" type="Integer" array="False" size="" />
+            <declare name="rate, avgHours" type="Real" array="False" size="" />
+            <assign variable="resolved" expression="0" />
+            <assign variable="totalHours" expression="0" />
+            <output expression="&quot;How many cases in the chosen dates?&quot;" newline="True" />
+            <input variable="total" />
+            <for variable="i" start="1" end="total" direction="inc" step="1">
+                <body>
+                    <output expression="&quot;Case &quot; &amp; i &amp; &quot;: resolved? 1 = yes, 0 = no&quot;" newline="True" />
+                    <input variable="isResolved" />
+                    <if expression="isResolved = 1">
+                        <then>
+                            <output expression="&quot;Hours from created to resolved?&quot;" newline="True" />
+                            <input variable="hours" />
+                            <assign variable="resolved" expression="resolved + 1" />
+                            <assign variable="totalHours" expression="totalHours + hours" />
+                        </then>
+                        <else />
+                    </if>
+                </body>
+            </for>
+            <assign variable="rate" expression="0.0" />
+            <assign variable="avgHours" expression="0.0" />
+            <if expression="total &gt; 0">
+                <then>
+                    <assign variable="rate" expression="100.0 * resolved / total" />
+                </then>
+                <else />
+            </if>
+            <if expression="resolved &gt; 0">
+                <then>
+                    <assign variable="avgHours" expression="1.0 * totalHours / resolved" />
+                </then>
+                <else />
+            </if>
+            <output expression="&quot;Total cases: &quot; &amp; total" newline="True" />
+            <output expression="&quot;Resolved: &quot; &amp; resolved" newline="True" />
+            <output expression="&quot;Resolution rate (%): &quot; &amp; rate" newline="True" />
+            <output expression="&quot;Average hours to resolve: &quot; &amp; avgHours" newline="True" />
+        </body>
+    </function>
+</flowgorithm>

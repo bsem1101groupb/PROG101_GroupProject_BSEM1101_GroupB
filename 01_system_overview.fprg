@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value="FixSalone - System overview" />
+        <attribute name="authors" value="PROG101 Group" />
+        <attribute name="about" value="FixSalone - PROG101 Final Project" />
+        <attribute name="saved" value="2026-11-26 05:00:00 AM" />
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters />
+        <body>
+            <comment text="FixSalone - System overview: role-based menu (Module 1)" />
+            <declare name="role, choice" type="Integer" array="False" size="" />
+            <output expression="&quot;Role? 1 Citizen, 2 Moderator, 3 Agency Officer, 4 Admin&quot;" newline="True" />
+            <input variable="role" />
+            <assign variable="choice" expression="-1" />
+            <if expression="role &lt; 1 or role &gt; 4">
+                <then>
+                    <output expression="&quot;Invalid role&quot;" newline="True" />
+                    <assign variable="choice" expression="0" />
+                </then>
+                <else />
+            </if>
+            <while expression="choice &lt;&gt; 0">
+                <body>
+                    <call expression="ShowMenu(role)" />
+                    <input variable="choice" />
+                    <if expression="choice = 0">
+                        <then>
+                            <output expression="&quot;Goodbye&quot;" newline="True" />
+                        </then>
+                        <else>
+                            <output expression="&quot;Opening option &quot; &amp; choice &amp; &quot; (see the module flowchart for this task)&quot;" newline="True" />
+                        </else>
+                    </if>
+                </body>
+            </while>
+        </body>
+    </function>
+    <function name="ShowMenu" type="None" variable="">
+        <parameters>
+            <parameter name="role" type="Integer" array="False" />
+        </parameters>
+        <body>
+            <if expression="role = 1">
+                <then>
+                    <output expression="&quot;CITIZEN menu: 1 Report a Problem, 2 My Reports, 3 Track by Code, 4 Sync, 0 Logout&quot;" newline="True" />
+                </then>
+                <else>
+                    <if expression="role = 2">
+                        <then>
+                            <output expression="&quot;MODERATOR menu: 1 Review Queue, 2 Forward Reports, 3 Escalations, 4 Dashboard, 0 Logout&quot;" newline="True" />
+                        </then>
+                        <else>
+                            <if expression="role = 3">
+                                <then>
+                                    <output expression="&quot;AGENCY OFFICER menu: 1 My Agency Cases, 2 Update Status, 3 Upload Proof, 0 Logout&quot;" newline="True" />
+                                </then>
+                                <else>
+                                    <output expression="&quot;ADMIN menu: 1 Manage Users, 2 Manage Agencies, 3 Manage Routing Table, 0 Logout&quot;" newline="True" />
+                                </else>
+                            </if>
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+</flowgorithm>

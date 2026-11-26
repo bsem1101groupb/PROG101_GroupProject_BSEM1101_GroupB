@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value="FixSalone - Login with phone code" />
+        <attribute name="authors" value="PROG101 Group" />
+        <attribute name="about" value="FixSalone - PROG101 Final Project" />
+        <attribute name="saved" value="2026-11-26 05:00:00 AM" />
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters />
+        <body>
+            <comment text="Module 1 - Register or login with a phone code" />
+            <declare name="phone" type="String" array="False" size="" />
+            <declare name="otp, entered, attempts, minutes" type="Integer" array="False" size="" />
+            <declare name="verified, expired" type="Boolean" array="False" size="" />
+            <output expression="&quot;Enter your phone number&quot;" newline="True" />
+            <input variable="phone" />
+            <if expression="Length(phone) &lt; 8">
+                <then>
+                    <output expression="&quot;Enter a valid phone number&quot;" newline="True" />
+                </then>
+                <else>
+                    <assign variable="otp" expression="Random(900000) + 100000" />
+                    <output expression="&quot;SMS sent. Demo code: &quot; &amp; otp" newline="True" />
+                    <assign variable="attempts" expression="0" />
+                    <assign variable="verified" expression="false" />
+                    <assign variable="expired" expression="false" />
+                    <while expression="attempts &lt; 3 and verified = false and expired = false">
+                        <body>
+                            <output expression="&quot;Minutes since the code was sent?&quot;" newline="True" />
+                            <input variable="minutes" />
+                            <if expression="minutes &gt; 5">
+                                <then>
+                                    <output expression="&quot;Code expired. Request a new code.&quot;" newline="True" />
+                                    <assign variable="expired" expression="true" />
+                                </then>
+                                <else>
+                                    <output expression="&quot;Enter the 6-digit code&quot;" newline="True" />
+                                    <input variable="entered" />
+                                    <if expression="entered = otp">
+                                        <then>
+                                            <assign variable="verified" expression="true" />
+                                        </then>
+                                        <else>
+                                            <assign variable="attempts" expression="attempts + 1" />
+                                            <output expression="&quot;Wrong code. Attempts used: &quot; &amp; attempts" newline="True" />
+                                        </else>
+                                    </if>
+                                </else>
+                            </if>
+                        </body>
+                    </while>
+                    <if expression="verified = true">
+                        <then>
+                            <output expression="&quot;Verified. New numbers become CITIZEN accounts. Showing the role menu.&quot;" newline="True" />
+                        </then>
+                        <else>
+                            <if expression="expired = false">
+                                <then>
+                                    <output expression="&quot;Too many wrong codes. This number is locked for 15 minutes.&quot;" newline="True" />
+                                </then>
+                                <else />
+                            </if>
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+</flowgorithm>

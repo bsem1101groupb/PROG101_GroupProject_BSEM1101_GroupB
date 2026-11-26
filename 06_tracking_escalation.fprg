@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value="FixSalone - Tracking and escalation" />
+        <attribute name="authors" value="PROG101 Group" />
+        <attribute name="about" value="FixSalone - PROG101 Final Project" />
+        <attribute name="saved" value="2026-11-26 05:00:00 AM" />
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters />
+        <body>
+            <comment text="Module 5 - Daily deadline check and escalation" />
+            <declare name="openCases, i, status, daysSince, level" type="Integer" array="False" size="" />
+            <declare name="overdue" type="Boolean" array="False" size="" />
+            <output expression="&quot;How many open cases?&quot;" newline="True" />
+            <input variable="openCases" />
+            <for variable="i" start="1" end="openCases" direction="inc" step="1">
+                <body>
+                    <output expression="&quot;Case &quot; &amp; i" newline="True" />
+                    <output expression="&quot;Status? 1 FORWARDED, 2 ACKNOWLEDGED, 3 IN_PROGRESS&quot;" newline="True" />
+                    <input variable="status" />
+                    <output expression="&quot;Days since forwarded or last escalated?&quot;" newline="True" />
+                    <input variable="daysSince" />
+                    <output expression="&quot;Current escalation level (0 to 3)?&quot;" newline="True" />
+                    <input variable="level" />
+                    <assign variable="overdue" expression="false" />
+                    <if expression="status = 1 and daysSince &gt; 5">
+                        <then>
+                            <assign variable="overdue" expression="true" />
+                        </then>
+                        <else>
+                            <if expression="status &lt;&gt; 1 and daysSince &gt; 30">
+                                <then>
+                                    <assign variable="overdue" expression="true" />
+                                </then>
+                                <else />
+                            </if>
+                        </else>
+                    </if>
+                    <if expression="overdue = false">
+                        <then>
+                            <output expression="&quot;On time. No action.&quot;" newline="True" />
+                        </then>
+                        <else>
+                            <if expression="level &lt; 3">
+                                <then>
+                                    <assign variable="level" expression="level + 1" />
+                                    <output expression="&quot;OVERDUE. Escalated to level &quot; &amp; level &amp; &quot;. Reminder sent to the &quot; &amp; ContactFor(level)" newline="True" />
+                                    <output expression="&quot;Clock restarts. Citizen told: your case has been escalated.&quot;" newline="True" />
+                                </then>
+                                <else>
+                                    <output expression="&quot;OVERDUE at the maximum level. Flagged as overdue on the public dashboard.&quot;" newline="True" />
+                                </else>
+                            </if>
+                        </else>
+                    </if>
+                </body>
+            </for>
+        </body>
+    </function>
+    <function name="ContactFor" type="String" variable="who">
+        <parameters>
+            <parameter name="level" type="Integer" array="False" />
+        </parameters>
+        <body>
+            <declare name="who" type="String" array="False" size="" />
+            <assign variable="who" expression="&quot;oversight contact&quot;" />
+            <if expression="level = 1">
+                <then>
+                    <assign variable="who" expression="&quot;agency supervisor&quot;" />
+                </then>
+                <else />
+            </if>
+            <if expression="level = 2">
+                <then>
+                    <assign variable="who" expression="&quot;agency head&quot;" />
+                </then>
+                <else />
+            </if>
+        </body>
+    </function>
+</flowgorithm>

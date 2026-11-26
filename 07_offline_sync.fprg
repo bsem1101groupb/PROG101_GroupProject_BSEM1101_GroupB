@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value="FixSalone - Offline sync" />
+        <attribute name="authors" value="PROG101 Group" />
+        <attribute name="about" value="FixSalone - PROG101 Final Project" />
+        <attribute name="saved" value="2026-11-26 05:00:00 AM" />
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters />
+        <body>
+            <comment text="Module 2 - Send queued reports (offline support)" />
+            <declare name="connection, queueCount, i, serverHas, serverOK" type="Integer" array="False" size="" />
+            <declare name="failed" type="Boolean" array="False" size="" />
+            <output expression="&quot;Network available? 1 = yes, 0 = no&quot;" newline="True" />
+            <input variable="connection" />
+            <if expression="connection = 0">
+                <then>
+                    <output expression="&quot;No network. Reports stay saved on the phone.&quot;" newline="True" />
+                </then>
+                <else>
+                    <output expression="&quot;How many unsent reports are saved on the phone?&quot;" newline="True" />
+                    <input variable="queueCount" />
+                    <assign variable="i" expression="1" />
+                    <assign variable="failed" expression="false" />
+                    <while expression="i &lt;= queueCount and failed = false">
+                        <body>
+                            <output expression="&quot;Report &quot; &amp; i &amp; &quot;: already on the server? 1 = yes, 0 = no&quot;" newline="True" />
+                            <input variable="serverHas" />
+                            <if expression="serverHas = 1">
+                                <then>
+                                    <output expression="&quot;Already on the server. Marked as sent (no duplicate).&quot;" newline="True" />
+                                </then>
+                                <else>
+                                    <output expression="&quot;Sending... does the server confirm? 1 = yes, 0 = no&quot;" newline="True" />
+                                    <input variable="serverOK" />
+                                    <if expression="serverOK = 1">
+                                        <then>
+                                            <output expression="&quot;Sent. SMS receipt with the tracking code sent to the citizen.&quot;" newline="True" />
+                                        </then>
+                                        <else>
+                                            <output expression="&quot;Sending stopped. Will retry later.&quot;" newline="True" />
+                                            <assign variable="failed" expression="true" />
+                                        </else>
+                                    </if>
+                                </else>
+                            </if>
+                            <assign variable="i" expression="i + 1" />
+                        </body>
+                    </while>
+                    <if expression="failed = false">
+                        <then>
+                            <output expression="&quot;All reports sent&quot;" newline="True" />
+                        </then>
+                        <else />
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+</flowgorithm>
