@@ -1,4 +1,4 @@
-# PROG101_GroupProject_BSEM1101_Group
+# PROG101_GroupProject_BSEM1101_GroupB
 
 # FixSalone
 
